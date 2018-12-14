@@ -349,3 +349,5 @@ You can run query again that view as if it were a table
 ### changed in a branch
 
 ### edit locally
+
+### edit on the server
