@@ -1,5 +1,6 @@
 # changes in the branch
 # changes in the branch
+# update the revisions in tagged v1.0 branch
 
 SQL or SEQUEL 
 
