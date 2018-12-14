@@ -1,0 +1,346 @@
+SQL or SEQUEL 
+
+SELECT 
+Combine the data in multiple tables to represent. We can use 'where' statement
+to look perticular record from one table to another using keys
+
+
+DBMS can enforce referential integrity constraints. For example if you are
+putting a customer ID into a table then this customer ID must exit in the
+customer table first.
+
+ENTITY - Represented by a single table, entity represents one theme. 
+
+RELATION - A relation is a specific type of Table. Characteristics of a
+relation table to qualify as a relation. This is also first normal form, 1NF
+1. rows contain data about instances of an entity
+2. Columns contain the data about attributes of an entity 
+3. Cells of the table hold a single value
+4. All values in the column are of the same type
+5. Each column has a unique name
+6. The order of column is not important 
+7. The order of the rows is not important
+8. two rows cannot have the identical values
+
+Terminology for the same stuff
+1. Table = relation 
+2. Row = record = tuple
+3. Column = field = attribute
+
+
+KEY = a specific column to identify a row.
+Unique vs non-unique keys
+Non-unique keys are used to create groups in the table
+
+KEY Types (UNIQUE)
+1. Composite Key - A key is composed of two or more columns. combination of
+these columns is unique
+2. Primary Key - Unique key to idenitify a particular row in a table
+3. Candidate Key - It has potential to become a primary key
+4. Surrogate Key - A unique/numeric value that is added to a relation to serve
+as the primary key. Surrogate keys are placed by the system and has no meaning
+to the user. Surrogate key is often used in place of a composite primary key
+
+NON-UNIQUE 
+1. Foreign Key
+Foregin keys are used to establish relationship between the tables. Basically
+linking the records between the table
+2. A Foreign key is a primary key of one table that is placed into another
+table.
+3. The key is called a foreign key in the table that receives the key
+4. These are used to enforce referential integrity
+5. Foreign Keys are not unique
+
+NULL VALUE
+1. represents empty cell in a table
+
+
+FUNCTIONAL DEPENDENCY 
+1. A relationship between different columns of a table. A column value can be
+calculated based on the other columns of the table
+
+NORMALIZATION
+1. The process of analyzing a relation to ensure that it is well formed. Which
+means it does not have insert/delete or update anomolies
+2. Normalization involves decomposing relations with anamolies to produce
+smaller well-structured relation
+3. If a relation is normalized, rows can be inserted/deleted or modified
+without creating anamolies
+
+
+PROCESS of NORMALIZATION
+1. Removed all multi valued attrubutes. That is each cell can have only one
+value. This will give us 1st Normal form or 1NF. By default every relation is
+1NF.
+2. 2NF - every non-key attribute is fully functionally dependent on the ENTIRE 
+primary Key. Remove partial dependecies. That means you shoud be able to
+uniquely identify each column in the row based enitrely from the primary key
+
+3. 3NF - remove transitive dependencies. Here the primary key is a determinant
+for another attribute which in turn is a determinant for a third. A transitive
+dependency is a functional depndency on an attribute which is not the primary
+key. All fields(columns) can be determined only by the primary key in the table and
+by no other column
+
+
+########## Structured Query Language
+1. A data definition language - define and manage DB structures and
+constraints
+2. A data manipulation language - CRUD and data retrieval 
+3. A data control Language - creating user accounts, permissions,secuirty etc
+
+
+### DDL
+1. CREATE , ALTER (modify), DROP (delete)
+
+CREATE TABLE <<table_name> (
+
+empID    Integer NOT NULL,
+empName Char(25) NOT NULL
+
+# NOT NULL means it is mandatory attribute
+# contraint key word to define a primary key. empPk is the name of the
+# constraint. Each constraint should have a name
+CONSTRAINT   empPk         PRIMARY KEY(empId)
+
+# composite key
+CONSTRAINT   empSkillPk    PRIMARY KEY(empId,skillId)
+
+#Foreign Key
+
+#empId in this table is the foreign key and relates to empId field in Employee
+#table
+# two example below
+CONSTRAINT   empFk         FOREIGN KEY(empId)  REFERENCES Employee(empId) ON
+DELETE CASCADE
+
+CONSTRAINT   empFk         FOREIGN KEY(empId)  REFERENCES Employee(empId) ON
+UPDATE CASCADE
+#MySQL
+
+#MYSQL DELETING FOREGIN KEY
+ALTER TABLE <table> DROP FOREIGN KEY (name);
+
+# update/delete cascade
+alter table employee add constraint abc FOREIGN KEY(DeptId) REFERENCES
+Department(DeptId) ON UPDATE CASCADE ON DELETE NO ACTION;
+
+);
+
+
+#### disable foreign key checks (specially to load data from csv in proper
+order)
+
+SET foreign_key_checks=0 // disable
+SET foreign_key_checks=1 // enable 
+
+
+2. ALTER - changing the structure of the table
+here we are adding a new constraint on the existing table
+
+ALTER TABLE <table>
+    ADD CONSTRAINT empPk PRIMARY KEY(empID);
+    ADD CONSTRAINT empPk PRIMARY KEY(empID,abcd); // composite key
+    CONSTRAINT   empFk         FOREIGN KEY(empId)  REFERENCES Employee(empId) ON
+    DELETE CASCADE
+
+# SEE constraints of a table
+
+SHOW CREATE TABLE <Table>
+
+
+#CHANGING DATA INTO DATABASE
+1. INSERT INTO
+2. UPDATE
+3. DELETE FROM 
+
+# VALUES should be in same order as the column names
+1. INSERT INTO employee(empiD,salarycode,lastname)
+               VALUES(62,11, 'Mojito');
+
+2. UPDATE <Table> SET column_name = new_value WHERE empID=29;
+
+# here multiple rows get updated based on the regular expression
+2. UPDATE <Table> SET column_name = new_value WHERE empName LIKE 'Da%' ;
+
+# updating all rows
+2. UPDATE <Table> SET column_name = new_value;
+
+
+#DELETE 
+
+DELETE FROM <Table> WHERE empID = 29;
+DELETE FROM <Table> WHERE empName LIKE 'Da%';
+#delete all
+DELETE FROM Employee; 
+
+
+
+SELECT is used to extract info from the database using specific criteria
+
+SELECT empName FROM Employee WHERE empID = 22;
+
+# Pick the column names 
+SELECT empName,empID skillSet FROM <table_name> WHERE empID = 22;
+
+SELECT empName From Employee // get all rows of empName
+
+SELECT * FROM Employee // retrive all columns and since no WHERE clause, it
+returms all rows
+
+# The result of the SELECT is always a temporary RELATION. The result may not
+# be in 3NF , specially in JOIN cases
+
+SELECT DISTINCT DeptId FROM Employee // to remove duplicates
+
+#WHERE CLAUSE
+contraint the action based on some filtering criteria
+
+SELECT empName FROM employee WHERE deptId=15 
+We can also use = <> > < >= <=
+
+# filter based on many criterias (AND, OR etc)
+
+SELECT empName FROM Employee WHERE deptID = 9 AND salary < 20000
+
+# IN keyword to provide list of values in WHERE clause
+
+# where deptID = 4 OR 7 or 9
+SELECT empName FROM employee WHERE deptID IN(4,7,9)
+
+# NOT clause
+
+SELECT empName FROM employee WHERE deptID NOT IN(4,7,9)
+
+# BETWEEN clause, 10 & 15 are inclusive
+SELECT empName FROM employee WHERE salarycode BETWEEN 10 AND 45
+SELECT empName FROM employee WHERE salarycode >=10 AND salarycode <=45;
+
+
+#LIKE keyword for partial searches , pattern matching
+% sign means match any number of characters
+_ sign means single wildcard character
+
+e.g LIKE 'Da%'   it is same as Da* in windows. all names starting with Da
+
+LIKE '657-278-____' - very specific 4 digit pattern
+
+
+# SORTING the SELECT output
+
+SELECT * FROM Employee ORDER BY empName 
+SELECT * FROM Employee ORDER BY empName  ASC/DESC (ascending or descending)
+
+# USE of COUNT MIN MAX SUM AVG STDEV do these on a specific Column
+
+SELECT COUNT (*) FROM Epmloyee
+mysql> select count(*) from employee where Age < 20;
+
+mysql>select MIN(Age) from employee;
+
+
+
+SELECT MIN(hours) AS minimumHours,
+       MAX(hours) AS maximumhours,
+       AVG(hours) AS averagehours
+       FROM project
+       WHERE projID > 7;
+
+
+#############
+GROUP BY - combine results in a catageorized output
+
+#get both deptID and the total number of rows and group by DeptID
+SELECT deptId, COUNT(*) AS numberofemp FROM Employee GROUP BY deptID
+
+
+AS keyword - to use to temporaily alias the result
+
+
+### HAVING for filtering the grouping, where clause for group by statement
+
+SELECT salespersonID, salespersonName, SUM(saleAmount) AS totalSales
+FROM Sales
+GROUP BY salesPersonID, salespersonName HAVING SUM(saleAmount) >=10000;
+
+
+#SUB QUERIES
+
+#since the result of a select is a relation, it is possible to use it as input
+to other
+1. Non correlated
+2. correlated 
+
+NON - CORRELATED SUB QUERY
+Where the inner query needs to be run once.
+
+SELECT empName FROM employee WHERE DeptId IN (_inner_query_)
+SELECT empName FROM employee WHERE DeptId IN (SELECT deptID from Department
+WHERE deptName LIKE 'Acc%')
+
+CORRELATED SUB QUERY
+-- Inner query has to be executed many times
+
+SELECT empName FROM employee e WHERE empSalary >
+(SELECT AVG(empSalary) from Employee WHERE deptId = e.deptId);
+WHERE deptName LIKE 'Acc%')
+
+
+## JOINS
+Another way to combining data from multiple tables is by using a JOIN
+
+Join allows to merge data from multiple tables into a single result set
+1. Inner JOIN 
+2. Outer JOIN (full, Left, Right)
+
+using WHERE clause
+
+SELECT empName, deptName FROM Employee AS E, Department AS D WHERE E.deptId = D.deptId;
+
+using ON clause
+SELECT empName,deptName FROM Employee e INNER JOIN Departmnt d ON e.deptID = d.DeptID
+WHERE d.deptName NOT LIKE 'Acc%';
+
+INNER JOIN = records can only be included in the result set if there are
+matched pairs of values in the two tables
+
+OUTER JOIN - can be used to obtain data that exists in one table without
+matching data in the other table
+
+SELECT empName,deptName FROM Employee e LEFT OUTER JOIN Department d ON e.deptId = d.deptId
+
+LEFT here means print the entire left table (employee) regardless of matching
+with the second table
+
+same case for RIGHT JOIN as well
+
+FULL OUTER JOIN - The unmatched data from either table are included in the
+result  (union of LEFT and RIGHT JOIN)
+
+
+### DELETING TABLE
+
+DROP TABLE <table> // whole table, including its schema
+
+
+## deleting contraint
+
+ALTER TABLE Employee DROP CONSTRAINT empFk // get rid of foreign key
+
+#CHECK constraint (acctable set of values in a column)
+
+ALTER TABLE project
+    ADD CONSTRAINT projectCheckDates CHECK(startDate < endDate);
+
+
+########### SQL VIEW (virtual TABLE)
+
+VIEW is created by DBMS-STORED SELECT statement which can combine access to
+data in multiple tables and even in other views
+
+CREATE view SalesDepartment AS
+SELECT * FROM Employee
+WHERE deptID = (SELECT deptId FROM Department WHERE deptName= 'sales');
+
+You can run query again that view as if it were a table
+
